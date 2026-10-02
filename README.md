@@ -9,6 +9,6 @@
 
 ## Выбранные сайты
 
-- Citilink (https://www.citilink.ru)
+- RBT (https://www.rbt.ru)
 - MVideo (https://www.mvideo.ru)
 - Yandex Market (https://market.yandex.ru)
