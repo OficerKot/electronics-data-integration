@@ -9,6 +9,6 @@
 
 ## Выбранные сайты
 
-- DNS (https://www.dns-shop.ru)
+- Citilink (https://www.citilink.ru)
 - MVideo (https://www.mvideo.ru)
-- Домотехника (https://domotekhnika.ru/)
+- Yandex Market (https://market.yandex.ru)
