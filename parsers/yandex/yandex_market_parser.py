@@ -22,21 +22,6 @@ for category, url in CATEGORY_URLS.items():
     response.raise_for_status()
     response.encoding = "utf-8"
 
-    print(f"Статус: {response.status_code}")
-    print(f"Фактический URL: {response.url}")
-
     soup = BeautifulSoup(response.content, "html.parser")
-
-    links = soup.find_all("a", href=True)
-
-    print(f"Всего ссылок найдено: {len(links)}")
-    print("-" * 60)
-
-    for link in links:
-        text = link.get_text(" ", strip=True)
-        href = link["href"]
-
-        if text:
-            print(f"TEXT: {text[:100]}")
-            print(f"HREF: {href}")
-            print("-" * 30)
+    cards = soup.select('div[data-zone-name="productSnippet"]')
+    print("Карточек найдено:", len(cards))

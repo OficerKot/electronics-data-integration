@@ -19,14 +19,11 @@ for category, url in CATEGORY_URLS.items():
         timeout=15
     )
 
-    print("Статус:", response.status_code)
-    print("Фактический URL:", response.url)
-
     response.raise_for_status()
 
     soup = BeautifulSoup(response.content, "html.parser")
 
-    links = soup.find_all("a", href=True)
+    links = soup.select('div[class = "ProductLineCard_container__sc8Ei ProductLineCard_line__MqF3B"]')
 
     print("Всего ссылок:", len(links))
     print("-" * 60)
