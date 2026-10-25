@@ -4,7 +4,10 @@ CATEGORY_URLS = {
     "smartphones": "https://www.regard.ru/catalog/1252/mobilnye-telefony",
     "tablets": "https://www.regard.ru/catalog/1264/planshety",
     "laptops": "https://www.regard.ru/catalog/1127/noutbuki",
+    "computers": "https://www.regard.ru/catalog/1218/nastolnye-kompyutery",
+    "monitors": "https://www.regard.ru/catalog/1035/monitory",
     "smart-watches": "https://www.regard.ru/catalog/1336/smart-casy-i-fitnes-braslety",
+    "tvs": "https://www.regard.ru/catalog/1224/televizory"
 }
 
 MAX_PAGES = 100

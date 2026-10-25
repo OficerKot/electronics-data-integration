@@ -7,6 +7,7 @@ CATEGORY_URLS = {
     "tablets": "https://market.yandex.ru/catalog--planshetnye-kompiutery/26908970/list?hid=6427100&rs=eJwzEvrEyMnBIMGgcGdxB_Nepr7tXXYANtYGVw%2C%2C",
     "laptops": "https://market.yandex.ru/catalog--noutbuki-personalnye/26895412/list?hid=91013&_redirectCount=1",
     "smart-watches": "https://market.yandex.ru/catalog--umnye-chasy-i-braslety/26893830/list?hid=10498025&_redirectCount=1",
+    "computers": "https://market.yandex.ru/catalog--kompiutery-i-komplektuiushchie/26909890/list?hid=10604359&rs=eJwzsv3EaMLBKHB8XjurBLPGj0d3lTU6jrNqPPsAZNz4BySuP_jMqnG8556yRgtQfOssIGPpinvKe5me24s4AABcMhwo"
 }
 
 HEADERS = {

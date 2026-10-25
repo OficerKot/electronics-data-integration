@@ -4,6 +4,7 @@ import requests
 from bs4 import BeautifulSoup
 from urllib.parse import urljoin
 from config import *
+from parsers.model.Product import Product
 from utils.json_storage import save_products
 from utils.price import parse_price
 
@@ -85,18 +86,18 @@ with requests.Session() as session:
                     if link_element else None
                 )
 
-                product = {
-                    "source": "RBT",
-                    "category": category,
-                    "source_id": product_id,
-                    "name": name,
-                    "price": price,
-                    "url": url,
-                    "description": None,
-                    "brand": None,
-                    "model": None,
-                    "characteristics": {}
-                }
+                product = Product(
+                    source="RBT",
+                    category=category,
+                    source_id=product_id,
+                    name=name,
+                    price=price,
+                    url=url,
+                    description=None,
+                    brand=None,
+                    model=None,
+                    characteristics={}
+                )
 
                 products.append(product)
                 added += 1
