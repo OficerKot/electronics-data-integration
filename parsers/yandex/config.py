@@ -1,3 +1,5 @@
+from parsers.rbt.config import MAX_PAGES
+
 BASE_URL = "https://market.yandex.ru"
 
 CATEGORY_URLS = {
@@ -5,4 +7,18 @@ CATEGORY_URLS = {
     "tablets": "https://market.yandex.ru/catalog--planshetnye-kompiutery/26908970/list?hid=6427100&rs=eJwzEvrEyMnBIMGgcGdxB_Nepr7tXXYANtYGVw%2C%2C",
     "laptops": "https://market.yandex.ru/catalog--noutbuki-personalnye/26895412/list?hid=91013&_redirectCount=1",
     "smart-watches": "https://market.yandex.ru/catalog--umnye-chasy-i-braslety/26893830/list?hid=10498025&_redirectCount=1",
+}
+
+HEADERS = {
+    "User-Agent": "Mozilla/5.0"
+}
+
+MAX_PAGES = 30
+
+CARD_SELECTOR = 'div[data-zone-name="productSnippet"]'
+
+ITEM_SELECTORS = {
+    "name": '[data-auto="snippet-title"]',
+    "price": '[data-auto="snippet-price-current"]',
+    "url": 'a[data-auto="snippet-link"]',
 }
