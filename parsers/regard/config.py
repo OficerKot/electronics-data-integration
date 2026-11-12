@@ -1,3 +1,5 @@
+from parsers.rbt.config import IMAGE_SELECTOR
+
 BASE_URL = "https://www.regard.ru"
 
 CATEGORY_URLS = {
@@ -10,7 +12,7 @@ CATEGORY_URLS = {
     "tvs": "https://www.regard.ru/catalog/1224/televizory"
 }
 
-MAX_PAGES = 100
+MAX_PAGES = 1
 
 HEADERS = {
     "User-Agent": "Mozilla/5.0"
@@ -18,7 +20,8 @@ HEADERS = {
 
 CARD_SELECTOR = "div.ListingRenderer_listingCard__s5ZKu"
 VARIANT_SELECTOR = "li.SimilarGood_wrap__8IgYa"
+IMAGE_SELECTOR = "img"
 
 JSON_NAME = "regard_products.json"
 
-REQUEST_PAUSE_TIME = 0.5
+REQUEST_PAUSE_TIME = 1

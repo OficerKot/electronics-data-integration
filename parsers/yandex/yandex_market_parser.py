@@ -5,6 +5,10 @@ from bs4 import BeautifulSoup
 
 from parsers.model.Product import Product
 from parsers.yandex.config import *
+from parsers.yandex.product_details import parse_characteristics, extract_image_url, extract_source_id
+from utils.brand_model import extract_brand_model
+
+from utils.date import extract_date_parsed
 from utils.html_helpers import get_text, get_url
 from utils.json_storage import save_products
 from utils.price import parse_price
@@ -12,7 +16,6 @@ from utils.price import parse_price
 
 def parse_zone_data(card):
     """Читает дополнительные данные из JSON внутри карточки."""
-
     raw_data = card.get("data-zone-data")
 
     if not raw_data:
@@ -36,14 +39,11 @@ def parse_product_card(card, category):
 
     # Дополнительные структурированные данные Яндекса
     zone_data = parse_zone_data(card)
-
-    characteristics = {}
-
-    for key in ("modelId", "marketSku", "shopSku", "vendorId"):
-        value = zone_data.get(key)
-
-        if value is not None:
-            characteristics[key] = str(value)
+    characteristics = parse_characteristics(card)
+    image_url = extract_image_url(card)
+    date_parsed = extract_date_parsed()
+    source_id = extract_source_id(url)
+    brand, model = extract_brand_model(name)
 
     return Product(
         source="Yandex Market",
@@ -51,8 +51,13 @@ def parse_product_card(card, category):
         name=name,
         price=parse_price(price_text),
         url=url,
+        source_id=source_id,
+        brand = brand,
+        model = model,
         description=zone_data.get("description"),
         characteristics=characteristics,
+        date_parsed=date_parsed,
+        image_url=image_url
     )
 
 def get_page(session, url: str, page: int):

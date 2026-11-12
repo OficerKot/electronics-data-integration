@@ -1,4 +1,5 @@
 from dataclasses import dataclass, field
+from datetime import datetime
 
 
 @dataclass
@@ -14,6 +15,10 @@ class Product:
     brand: str | None = None
     model: str | None = None
 
+    image_url: str | None = None
+
     characteristics: dict[str, str] = field(
         default_factory=dict
     )
+
+    date_parsed: datetime | None = None

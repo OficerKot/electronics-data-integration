@@ -26,3 +26,4 @@ def get_url(parent, selector, base_url):
         return None
 
     return urljoin(base_url, href)
+

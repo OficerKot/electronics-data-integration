@@ -1,7 +1,7 @@
 import json
 from dataclasses import asdict
 from pathlib import Path
-
+from datetime import datetime
 
 DATA_DIR = Path(__file__).resolve().parents[1] / "data"
 
@@ -20,7 +20,8 @@ def save_products(products, filename):
             data,
             file,
             ensure_ascii=False,
-            indent=4
+            indent=4,
+            default=lambda obj: obj.isoformat() if isinstance(obj, datetime) else str(obj)
         )
 
     print(f"Сохранено товаров: {len(products)}")

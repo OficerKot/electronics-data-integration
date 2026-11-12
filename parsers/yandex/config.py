@@ -14,7 +14,7 @@ HEADERS = {
     "User-Agent": "Mozilla/5.0"
 }
 
-MAX_PAGES = 30
+MAX_PAGES = 1
 
 CARD_SELECTOR = 'div[data-zone-name="productSnippet"]'
 
@@ -22,4 +22,7 @@ ITEM_SELECTORS = {
     "name": '[data-auto="snippet-title"]',
     "price": '[data-auto="snippet-price-current"]',
     "url": 'a[data-auto="snippet-link"]',
+    "characteristics": '._2JqZs',
+    "characteristic": '.B_ssj',
+    "image": 'img'
 }

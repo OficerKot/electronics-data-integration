@@ -7,35 +7,12 @@ from urllib.parse import urljoin
 
 from parsers.model.Product import Product
 from parsers.regard.config import *
+from parsers.regard.product_details import *
+from utils.date import extract_date_parsed
+from utils.html_helpers import get_text
 from utils.json_storage import save_products
-from utils.price import parse_price
-
-
-def get_text(element):
-    """Получает текст HTML-элемента."""
-    if element is None:
-        return None
-
-    return element.get_text(" ", strip=True)
-
-def extract_brand(name):
-    """Пытается извлечь бренд из названия товара."""
-    prefixes = (
-        "Смартфон ",
-        "Планшет ",
-        "Ноутбук ",
-        "Смарт-часы ",
-        "Умные часы ",
-    )
-
-    for prefix in prefixes:
-        if name.lower().startswith(prefix.lower()):
-            remaining_name = name[len(prefix):].strip()
-
-            if remaining_name:
-                return remaining_name.split()[0]
-
-    return None
+from datetime import datetime, timezone
+from email.utils import parsedate_to_datetime
 
 
 def parse_main_product(card, category):
@@ -47,23 +24,36 @@ def parse_main_product(card, category):
     if title_element is None or link is None:
         return None
 
-    name = get_text(title_element)
+    name = title_element.get_text(" ", strip=True)
     url = urljoin(BASE_URL, link["href"])
+
+    brand = extract_brand(name)
+    model = get_model(name, brand)
+    source_id = get_source_id(url)
     description = get_text(
-        card.select_one(".CardText_text__9MCH8")
+        card,
+        ".CardText_text__9MCH8"
     )
+    price = extract_price(card)
+    characteristics = parse_characteristics(description)
+    image_url = extract_image_url(card)
+    date_parsed = extract_date_parsed()
 
     return Product(
         source="Regard",
         category=category,
+        source_id=source_id,
         name=name,
         url=url,
-        price=parse_price(
-            card.select_one(".CardPrice_price__NPXiK").get_text(" ", strip=True)
-        ),
+        price=price,
         description=description,
-        brand=extract_brand(name),
+        brand=brand,
+        model=model,
+        characteristics=characteristics,
+        date_parsed=date_parsed,
+        image_url=image_url
     )
+
 
 
 def parse_variant(variant, category):
@@ -76,22 +66,34 @@ def parse_variant(variant, category):
     if link is None:
         return None
 
-    name = get_text(link)
+    name = link.get_text(" ", strip = True)
     url = urljoin(BASE_URL, link["href"])
+
     description = get_text(
         variant.select_one(".SimilarGood_brief__vqsSI")
     )
 
+    # Определяем бренд, модель и ID
+    brand = extract_brand(name)
+    model = get_model(name, brand)
+    source_id = get_source_id(url)
+    price = extract_price(variant)
+    characteristics = parse_characteristics(description)
+    date_parsed = extract_date_parsed()
+    image_url = extract_image_url(variant)
     return Product(
         source="Regard",
         category=category,
+        source_id=source_id,
         name=name,
         url=url,
-        price=parse_price(
-            variant.select_one(".SimilarGood_price__3UBK3")
-        ),
+        price=price,
         description=description,
-        brand=extract_brand(name),
+        brand=brand,
+        model=model,
+        characteristics=characteristics,
+        date_parsed = date_parsed,
+        image_url = image_url
     )
 
 
@@ -127,7 +129,8 @@ def parse_category(session, category, category_url, all_seen_urls):
         print(f"\nКатегория: {category} | Страница: {page}")
 
         try:
-            response = session.get(
+            response = get_with_backoff(
+                session,
                 category_url,
                 params={"page": page},
                 headers=HEADERS,
@@ -182,6 +185,54 @@ def parse_category(session, category, category_url, all_seen_urls):
         time.sleep(REQUEST_PAUSE_TIME)
 
     return products
+
+def get_with_backoff(session, url, max_retries=3, **kwargs):
+    """Загружает страницу с обработкой ограничения 429."""
+
+    for attempt in range(max_retries):
+
+        response = session.get(url, **kwargs)
+
+        if response.status_code != 429:
+            response.raise_for_status()
+            return response
+
+        # Считываем рекомендованное время ожидания
+        retry_after = response.headers.get("Retry-After")
+
+        if retry_after:
+            try:
+                delay = float(retry_after)
+
+            except ValueError:
+                try:
+                    retry_date = parsedate_to_datetime(retry_after)
+
+                    if retry_date.tzinfo is None:
+                        retry_date = retry_date.replace(
+                            tzinfo=timezone.utc
+                        )
+
+                    delay = max(
+                        0,
+                        (retry_date - datetime.now(timezone.utc)).total_seconds()
+                    )
+
+                except (ValueError, TypeError, OverflowError):
+                    delay = 60 * (2 ** attempt)
+
+        else:
+            # Если сайт не сообщил время ожидания
+            delay = 60 * (2 ** attempt)
+
+        if attempt == max_retries - 1:
+            print("Повторный 429. Останавливаем сбор.")
+            return None
+
+        print(f"Получен 429. Ожидание {delay:.0f} секунд...")
+        time.sleep(delay)
+
+    return None
 
 def parse_url():
     all_products = []
